@@ -4,7 +4,6 @@ import ErrorHandler from "../utils/errorHandler.js";
 import { catchAsyncError } from "./catchAsyncError.js";
 export const isAuthenticated = catchAsyncError(async (req, res, next) => {
   const { token } = req.cookies;
-  console.log(req)
 
   if (!token) return next(new ErrorHandler("Not Logged In", 401));
 
