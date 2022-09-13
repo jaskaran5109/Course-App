@@ -107,7 +107,7 @@ export const updateProfile = catchAsyncError(async (req, res, next) => {
   const user = await User.findById(req.user._id).select("+password");
   if (name) user.name = name;
   if (email) user.email = email;
-
+  await user.save();
   res.status(200).json({
     success: true,
     message: "Profile updated successfully",
@@ -117,21 +117,23 @@ export const updateProfile = catchAsyncError(async (req, res, next) => {
 
 export const updateProfilePicture = catchAsyncError(async (req, res, next) => {
   const user = await User.findById(req.user._id);
-
+  
   const file = req.file;
-  const fileUri = getdataUri(file);
-
+  const fileUri = getDataUri(file);
   const mycloud = await cloudinary.v2.uploader.upload(fileUri.content);
 
   await cloudinary.v2.uploader.destroy(user.avatar.public_id);
+
   user.avatar = {
     public_id: mycloud.public_id,
     url: mycloud.secure_url,
   };
+
   await user.save();
+
   res.status(200).json({
     success: true,
-    message: "Profile Picture updated successfully",
+    message: "Profile Picture Updated Successfully",
   });
 });
 
