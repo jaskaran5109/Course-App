@@ -294,8 +294,9 @@ User.watch().on("change", async () => {
   const stats = await Stats.find({}).sort({ createdAt: "desc" }).limit(1);
   console.log(stats);
   const subscription = await User.find({ "subscription.status": "active" });
-  const dt = await User.countDocuments();
-  stats[0].users = dt;
+  await User.countDocuments((count)=>
+  stats[0].users = count
+  );
   stats[0].subscriptions = subscription.length;
   stats[0].createdAt = new Date(Date.now());
 
