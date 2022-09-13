@@ -85,7 +85,7 @@ export const changePassword = catchAsyncError(async (req, res, next) => {
   if (!oldPassword || !newPassword) {
     return next(new ErrroHandler("Please enter a All fields", 400));
   }
-  const user = await User.findById(req.user._id);
+  const user = await User.findById(req.user._id).select("+password");
   if (!user) {
     return next(new ErrroHandler("User doesn't exist", 409));
   }
