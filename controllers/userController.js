@@ -40,21 +40,20 @@ export const register = catchAsyncError(async (req, res, next) => {
 
 export const login = catchAsyncError(async (req, res, next) => {
   const { email, password } = req.body;
-  // const file=req.file;
 
-  if (!email || !password) {
-    return next(new ErrroHandler("Please enter a All fields", 400));
-  }
+  if (!email || !password)
+    return next(new ErrorHandler("Please enter all field", 400));
+
   const user = await User.findOne({ email }).select("+password");
-  if (!user) {
-    return next(new ErrroHandler("User doesn't exist", 409));
-  }
+
+  if (!user) return next(new ErrorHandler("Incorrect Email or Password", 401));
 
   const isMatch = await user.comparePassword(password);
-  if (!isMatch) {
-    return next(new ErrroHandler("Incorrect details", 409));
-  }
-  sendToken(res, user, `Login Successfully, ${user.name}`, 201);
+
+  if (!isMatch)
+    return next(new ErrorHandler("Incorrect Email or Password", 401));
+
+  sendToken(res, user, `Welcome back, ${user.name}`, 200);
 });
 
 export const logout = catchAsyncError(async (req, res, next) => {
@@ -62,9 +61,9 @@ export const logout = catchAsyncError(async (req, res, next) => {
     .status(200)
     .cookie("token", null, {
       expires: new Date(Date.now()),
-      httpOnly:true,
-      secure:true,
-      sameSize:"none"
+      httpOnly: true,
+      secure: true,
+      sameSize: "none",
     })
     .json({
       success: true,
@@ -291,9 +290,10 @@ export const deleteMyProfile = catchAsyncError(async (req, res, next) => {
 
 User.watch().on("change", async () => {
   const stats = await Stats.find({}).sort({ createdAt: "desc" }).limit(1);
-
+  console.log(stats);
   const subscription = await User.find({ "subscription.status": "active" });
-  stats[0].users = await User.countDocuments();
+  const dt = await User.countDocuments();
+  stats[0].users = dt;
   stats[0].subscriptions = subscription.length;
   stats[0].createdAt = new Date(Date.now());
 
