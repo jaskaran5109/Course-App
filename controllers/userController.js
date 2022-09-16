@@ -119,7 +119,7 @@ export const updateProfilePicture = catchAsyncError(async (req, res, next) => {
   const user = await User.findById(req.user._id);
   
   const file = req.file;
-  const fileUri = getDataUri(file);
+  const fileUri = getdataUri(file);
   const mycloud = await cloudinary.v2.uploader.upload(fileUri.content);
 
   await cloudinary.v2.uploader.destroy(user.avatar.public_id);
