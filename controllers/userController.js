@@ -104,20 +104,23 @@ export const changePassword = catchAsyncError(async (req, res, next) => {
 
 export const updateProfile = catchAsyncError(async (req, res, next) => {
   const { name, email } = req.body;
-  const user = await User.findById(req.user._id).select("+password");
+
+  const user = await User.findById(req.user._id);
+
   if (name) user.name = name;
   if (email) user.email = email;
+
   await user.save();
+
   res.status(200).json({
     success: true,
-    message: "Profile updated successfully",
-    user,
+    message: "Profile Updated Successfully",
   });
 });
 
 export const updateProfilePicture = catchAsyncError(async (req, res, next) => {
   const user = await User.findById(req.user._id);
-  
+
   const file = req.file;
   const fileUri = getdataUri(file);
   const mycloud = await cloudinary.v2.uploader.upload(fileUri.content);
@@ -294,9 +297,7 @@ User.watch().on("change", async () => {
   const stats = await Stats.find({}).sort({ createdAt: "desc" }).limit(1);
   console.log(stats);
   const subscription = await User.find({ "subscription.status": "active" });
-  await User.countDocuments((count)=>
-  stats[0].users = count
-  );
+  await User.countDocuments((count) => (stats[0].users = count));
   stats[0].subscriptions = subscription.length;
   stats[0].createdAt = new Date(Date.now());
 
