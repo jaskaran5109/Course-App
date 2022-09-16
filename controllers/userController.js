@@ -293,13 +293,13 @@ export const deleteMyProfile = catchAsyncError(async (req, res, next) => {
     });
 });
 
-User.watch().on("change", async () => {
-  const stats = await Stats.find({}).sort({ createdAt: "desc" }).limit(1);
-  console.log(stats);
-  const subscription = await User.find({ "subscription.status": "active" });
-  await User.countDocuments((count) => (stats[0].users = count));
-  stats[0].subscriptions = subscription.length;
-  stats[0].createdAt = new Date(Date.now());
+// User.watch().on("change", async () => {
+//   const stats = await Stats.find({}).sort({ createdAt: "desc" }).limit(1);
+//   console.log(stats)
+//   const subscription = await User.find({ "subscription.status": "active" });
+//   stats[0].users = await User.countDocuments();
+//   stats[0].subscription = subscription.length;
+//   stats[0].createdAt = new Date(Date.now());
 
-  await stats[0].save();
-});
+//   await stats[0].save();
+// });

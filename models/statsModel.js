@@ -5,7 +5,7 @@ const schema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  subscriptions: {
+  subscription: {
     type: Number,
     default: 0,
   },

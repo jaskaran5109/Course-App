@@ -40,69 +40,58 @@ export const getDashboardStats = catchAsyncError(async (req, res, next) => {
   for (let i = 0; i < stats.length; i++) {
     statsData.unshift(stats[i]);
   }
-  const requiredsize = 12 - stats.length;
+  const requiredSize = 12 - stats.length;
 
-  for (let i = 0; i < requiredsize; i++) {
+  for (let i = 0; i < requiredSize; i++) {
     statsData.unshift({
       users: 0,
-      subscriptions: 0,
+      subscription: 0,
       views: 0,
     });
   }
 
   const usersCount = statsData[11].users;
-  const subscriptionsCount = statsData[11].subscriptions;
+  const subscriptionCount = statsData[11].subscription;
   const viewsCount = statsData[11].views;
-
-  let usersProfit = true,
-    viewsProfit = true,
-    subscriptionsProfit = true;
 
   let usersPercentage = 0,
     viewsPercentage = 0,
-    subscriptionsPercentage = 0;
+    subscriptionPercentage = 0;
+  let usersProfit = true,
+    viewsProfit = true,
+    subscriptionProfit = true;
 
-  if (statsData[10].users === 0) {
-    usersPercentage = usersCount * 100;
-  }
-  if (statsData[10].users === 0) {
-    viewsPercentage = viewsCount * 100;
-  }
-  if (statsData[10].users === 0) {
-    subscriptionsPercentage = subscriptionsCount * 100;
-  } else {
-    const diff = {
+  if (statsData[10].users === 0) usersPercentage = usersCount * 100;
+  if (statsData[10].views === 0) viewsPercentage = viewsCount * 100;
+  if (statsData[10].subscription === 0)
+    subscriptionPercentage = subscriptionCount * 100;
+  else {
+    const difference = {
       users: statsData[11].users - statsData[10].users,
       views: statsData[11].views - statsData[10].views,
-      subscriptions: statsData[11].subscriptions - statsData[10].subscriptions,
+      subscription: statsData[11].subscription - statsData[10].subscription,
     };
-    usersPercentage = (diff.users / statsData[10].users) * 100;
-    viewsPercentage = (diff.views / statsData[10].views) * 100;
-    subscriptionsPercentage =
-      (diff.subscriptions / statsData[10].subscriptions) * 100;
 
-    if (usersPercentage < 0) {
-      usersProfit = false;
-    }
-    if (viewsPercentage < 0) {
-      viewsProfit = false;
-    }
-    if (subscriptionsPercentage < 0) {
-      subscriptionsProfit = false;
-    }
+    usersPercentage = (difference.users / statsData[10].users) * 100;
+    viewsPercentage = (difference.views / statsData[10].views) * 100;
+    subscriptionPercentage =
+      (difference.subscription / statsData[10].subscription) * 100;
+    if (usersPercentage < 0) usersProfit = false;
+    if (viewsPercentage < 0) viewsProfit = false;
+    if (subscriptionPercentage < 0) subscriptionProfit = false;
   }
 
   res.status(200).json({
     success: true,
     stats: statsData,
     usersCount,
-    subscriptionsCount,
+    subscriptionCount,
     viewsCount,
-    subscriptionsPercentage,
-    usersPercentage,
+    subscriptionPercentage,
     viewsPercentage,
-    usersProfit,
+    usersPercentage,
+    subscriptionProfit,
     viewsProfit,
-    subscriptionsProfit,
+    usersProfit,
   });
 });
