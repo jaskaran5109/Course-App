@@ -27,7 +27,7 @@ export const buySubscription = catchAsyncError(async (req, res, next) => {
 });
 
 export const paymentVerification = catchAsyncError(async (req, res, next) => {
-  const { razorpay_signature, razorpay_payment_id, razorpay_susbcription_id } =
+  const { razorpay_signature, razorpay_payment_id, razorpay_subscription_id } =
     req.body;
 
   const user = await User.findById(req.user._id);
@@ -48,7 +48,7 @@ export const paymentVerification = catchAsyncError(async (req, res, next) => {
   await Payment.create({
     razorpay_signature,
     razorpay_payment_id,
-    razorpay_susbcription_id,
+    razorpay_subscription_id,
   });
 
   user.subscription.status = "active";
@@ -74,7 +74,7 @@ export const cancelSubscription = catchAsyncError(async (req, res, next) => {
   let refund = false;
   await instance.subscriptions.cancel(subscriptionId);
   const payment = await Payment.findOne({
-    razorpay_susbcription_id: subscriptionId,
+    razorpay_subscription_id: subscriptionId,
   });
 
   const gap = Date.now() - payment.createdAt();
