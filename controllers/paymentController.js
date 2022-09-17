@@ -27,25 +27,30 @@ export const buySubscription = catchAsyncError(async (req, res, next) => {
 });
 
 export const paymentVerification = catchAsyncError(async (req, res, next) => {
-  const { razorpay_signature, razorpay_payment_id, razorpay_susbcription_id } =
+  const { razorpay_signature, razorpay_payment_id, razorpay_subscription_id } =
     req.body;
 
   const user = await User.findById(req.user._id);
 
-  const subscriptionId = user.subscription.id;
+  const subscription_id = user.subscription.id;
+
   const generated_signature = crypto
-    .createHmac("sha256", process.env.RAZOR_PAY_API_KEY)
-    .update(razorpay_payment_id + "|" + subscriptionId, "utf-8")
+    .createHmac("sha256", process.env.RAZOR_PAY_API_SECRET)
+    .update(razorpay_payment_id + "|" + subscription_id, "utf-8")
     .digest("hex");
+
   const isAuthentic = generated_signature === razorpay_signature;
-  if (!isAuthentic) {
-    return res.redirect(`${process.env.FRONTEND_URL}/paymentfailed`);
-  }
+
+  if (!isAuthentic)
+    return res.redirect(`${process.env.FRONTEND_URL}/paymentfail`);
+
+  // database comes here
   await Payment.create({
     razorpay_signature,
     razorpay_payment_id,
-    razorpay_susbcription_id,
+    razorpay_subscription_id,
   });
+
   user.subscription.status = "active";
 
   await user.save();
@@ -78,10 +83,10 @@ export const cancelSubscription = catchAsyncError(async (req, res, next) => {
     await instance.payments.refund(payment.razorpay_payment_id);
     refund = true;
   }
-  await payment.remove()
-  user.subscription.is=undefined;
-  user.subscription.status=undefined;
-  await user.save()
+  await payment.remove();
+  user.subscription.is = undefined;
+  user.subscription.status = undefined;
+  await user.save();
   res.status(200).json({
     success: true,
     message: refund
