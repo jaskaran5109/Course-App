@@ -12,7 +12,7 @@ export const buySubscription = catchAsyncError(async (req, res, next) => {
   }
   const plan_id = process.env.PLAN_ID || "plan_7wAosPWtrkhqZw";
   const subscription = await instance.subscriptions.create({
-    plan_id: plan_id,
+    plan_id,
     customer_notify: 1,
     total_count: 12,
   });
@@ -27,7 +27,7 @@ export const buySubscription = catchAsyncError(async (req, res, next) => {
 });
 
 export const paymentVerification = catchAsyncError(async (req, res, next) => {
-  const { razorpay_signature, razorpay_payment_id, razorpay_subscription_id } =
+  const { razorpay_signature, razorpay_payment_id, razorpay_susbcription_id } =
     req.body;
 
   const user = await User.findById(req.user._id);
@@ -48,7 +48,7 @@ export const paymentVerification = catchAsyncError(async (req, res, next) => {
   await Payment.create({
     razorpay_signature,
     razorpay_payment_id,
-    razorpay_subscription_id,
+    razorpay_susbcription_id,
   });
 
   user.subscription.status = "active";
