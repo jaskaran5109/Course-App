@@ -69,7 +69,7 @@ export const getCourseLecture = catchAsyncError(async (req, res, next) => {
 });
 
 export const createLecture = catchAsyncError(async (req, res, next) => {
-  const { id } = req.params.id;
+  const { id } = req.params;
   const { title, description } = req.body;
   const course = await Course.findById(id);
   if (!course) {
