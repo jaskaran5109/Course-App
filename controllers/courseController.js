@@ -8,17 +8,15 @@ export const getAllCourses = catchAsyncError(async (req, res, next) => {
   const keyword = req.query.keyword || "";
   const category = req.query.category || "";
 
-
-
   const courses = await Course.find({
-    title:{
-      $regex:keyword,
-      $options:"i"
+    title: {
+      $regex: keyword,
+      $options: "i",
     },
-    category:{
-      $regex:category,
-      $options:"i"
-    }
+    category: {
+      $regex: category,
+      $options: "i",
+    },
   }).select("-lectures");
   res.status(200).json({
     success: true,
@@ -129,18 +127,16 @@ export const deleteLecture = catchAsyncError(async (req, res, next) => {
     return next(new ErrorHandler("Course not found", 404));
   }
   const lecture = course.lectures.find((item) => {
-    if (item._id.toString() === lectureId.toString()) {
-      return item;
-    }
+    if (item._id.toString() === lectureId.toString()) return item;
   });
   await cloudinary.v2.uploader.destroy(lecture.video.public_id, {
     resource_type: "video",
   });
+
   course.lectures = course.lectures.filter((item) => {
-    if (item._id.toString() !== lectureId.toString()) {
-      return item;
-    }
+    if (item._id.toString() !== lectureId.toString()) return item;
   });
+
   course.numOfVideos = course.lectures.length;
   await course.save();
   res.status(200).json({
