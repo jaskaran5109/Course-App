@@ -253,7 +253,7 @@ export const updateUserRole = catchAsyncError(async (req, res, next) => {
   }
   if (user.role === "user") {
     user.role = "admin";
-  } else {
+  } else if (user.role === "admin") {
     user.role = "user";
   }
   await user.save();
@@ -293,13 +293,13 @@ export const deleteMyProfile = catchAsyncError(async (req, res, next) => {
     });
 });
 
-// User.watch().on("change", async () => {
-//   const stats = await Stats.find({}).sort({ createdAt: "desc" }).limit(1);
-//   console.log(stats)
-//   const subscription = await User.find({ "subscription.status": "active" });
-//   stats[0].users = await User.countDocuments();
-//   stats[0].subscription = subscription.length;
-//   stats[0].createdAt = new Date(Date.now());
+User.watch().on("change", async () => {
+  const stats = await Stats.find({}).sort({ createdAt: "desc" }).limit(1);
 
-//   await stats[0].save();
-// });
+  const subscription = await User.find({ "subscription.status": "active" });
+  stats[0].users = await User.countDocuments();
+  stats[0].subscription = subscription.length;
+  stats[0].createdAt = new Date(Date.now());
+
+  await stats[0].save();
+});
