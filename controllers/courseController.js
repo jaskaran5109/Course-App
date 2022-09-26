@@ -129,7 +129,8 @@ export const deleteLecture = catchAsyncError(async (req, res, next) => {
   const lecture = course.lectures.find((item) => {
     if (item._id.toString() === lectureId.toString()) return item;
   });
-  await cloudinary.v2.uploader.destroy(lecture.public_id, {
+  console.log(lecture);
+  await cloudinary.v2.uploader.destroy(lecture.video.public_id, {
     resource_type: "video",
   });
 
