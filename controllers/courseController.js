@@ -124,7 +124,7 @@ export const deleteCourse = catchAsyncError(async (req, res, next) => {
 export const deleteLecture = catchAsyncError(async (req, res, next) => {
   const { courseId, lectureId } = req.query;
 
-  const course = await Course.findById(id);
+  const course = await Course.findById(courseId);
   if (!course) {
     return next(new ErrorHandler("Course not found", 404));
   }
