@@ -10,6 +10,13 @@ export const getAllNotes = catchAsyncError(async (req, res, next) => {
     notes,
   });
 });
+export const getSingleNote = catchAsyncError(async (req, res, next) => {
+  const notes = await Notes.findById(req.params.id);
+  res.status(200).json({
+    success: true,
+    notes,
+  });
+});
 export const createNote = catchAsyncError(async (req, res, next) => {
   const { title, description, createdBy } = req.body;
 
@@ -120,4 +127,3 @@ export const deleteNotesNote = catchAsyncError(async (req, res, next) => {
     message: "Note deleted successfully",
   });
 });
-

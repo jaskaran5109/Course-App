@@ -6,6 +6,7 @@ import {
   deleteNotesNote,
   getAllNotes,
   getNotesNote,
+  getSingleNote,
 } from "../controllers/noteController.js";
 
 import {
@@ -18,6 +19,7 @@ const router = express.Router();
 // isAuthenticated, authorizedAdmin,
 router.route("/notes").get(getAllNotes);
 router.route("/create/note").post(singleUpload, createNote);
+router.route("/single/note/:id").get(getSingleNote);
 
 // isAuthenticated, authorizedSubscribers,
 // isAuthenticated, authorizedAdmin,
