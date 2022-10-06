@@ -16,21 +16,22 @@ import {
 } from "../middlewares/auth.js";
 import singleUpload from "../middlewares/multer.js";
 const router = express.Router();
-// isAuthenticated, authorizedAdmin,
+
 router.route("/notes").get(getAllNotes);
-router.route("/create/note").post(singleUpload, createNote);
+router
+  .route("/create/note")
+  .post(isAuthenticated, authorizedAdmin, singleUpload, createNote);
 router.route("/single/note/:id").get(getSingleNote);
 
 // isAuthenticated, authorizedSubscribers,
-// isAuthenticated, authorizedAdmin,
-// isAuthenticated, authorizedAdmin,
 router
   .route("/note/:id")
-  .get(getNotesNote)
-  .post(singleUpload, createNoteNotes)
-  .delete(deleteNote);
+  .get(isAuthenticated,getNotesNote)
+  .post(isAuthenticated, authorizedAdmin, singleUpload, createNoteNotes)
+  .delete(isAuthenticated, authorizedAdmin, deleteNote);
 
-//   isAuthenticated, authorizedAdmin,
-router.route("/delnotes").delete(deleteNotesNote);
+router
+  .route("/delnotes")
+  .delete(isAuthenticated, authorizedAdmin, deleteNotesNote);
 
 export default router;

@@ -44,6 +44,11 @@ const schema = new mongoose.Schema({
     type: String,
     required: [true, "Enter Note Creator Name"],
   },
+  user: {
+    type: mongoose.Schema.ObjectId,
+    ref: "User",
+    required: true,
+  },
   createdAt: {
     type: Date,
     default: Date.now(),

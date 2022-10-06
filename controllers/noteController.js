@@ -37,6 +37,7 @@ export const createNote = catchAsyncError(async (req, res, next) => {
       public_id: mycloud.public_id,
       url: mycloud.secure_url,
     },
+    user:req.user.id
   });
   res.status(200).json({
     success: true,
