@@ -30,6 +30,14 @@ const schema = new mongoose.Schema({
     id: String,
     status: String,
   },
+  courseBuy: [
+    {
+      course: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Course",
+      },
+    },
+  ],
   avatar: {
     public_id: {
       type: String,

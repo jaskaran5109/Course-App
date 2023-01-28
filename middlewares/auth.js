@@ -27,10 +27,15 @@ export const authorizedAdmin = (req, res, next) => {
 };
 
 export const authorizedSubscribers = (req, res, next) => {
-  if (req.user.subscription.status !== "active" && req.user.role !== "admin") {
-    return next(
-      new ErrorHandler(`Only Subscribers can access this resourse`, 403)
-    );
-  }
+  // if (req.user.role !== "admin") {
+  //   return next(
+  //     new ErrorHandler(`Only Subscribers can access this resourse`, 403)
+  //   );
+  // }
+  // if (req.user.coursesBuy.subscription.status !== "active" && req.user.role !== "admin") {
+  //   return next(
+  //     new ErrorHandler(`Only Subscribers can access this resourse`, 403)
+  //   );
+  // }
   next();
 };

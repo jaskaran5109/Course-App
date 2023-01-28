@@ -4,9 +4,11 @@ import ErrorHandler from "../utils/errorHandler.js";
 import { instance } from "../server.js";
 import crypto from "crypto";
 import { Payment } from "../models/paymentModel.js";
+import { Course } from "../models/courseModel.js";
 
 export const buySubscription = catchAsyncError(async (req, res, next) => {
   const user = await User.findById(req.user._id);
+
   if (user.role === "admin") {
     return next(new ErrorHandler("Admin can't buy subscription", 400));
   }
@@ -16,6 +18,7 @@ export const buySubscription = catchAsyncError(async (req, res, next) => {
     customer_notify: 1,
     total_count: 12,
   });
+
   user.subscription.id = subscription.id;
   user.subscription.status = subscription.status;
   await user.save();
@@ -31,6 +34,7 @@ export const paymentVerification = catchAsyncError(async (req, res, next) => {
     req.body;
 
   const user = await User.findById(req.user._id);
+  const course = await Course.findById(req.params.id);
 
   const subscription_id = user.subscription.id;
 
@@ -50,16 +54,17 @@ export const paymentVerification = catchAsyncError(async (req, res, next) => {
     razorpay_payment_id,
     razorpay_subscription_id,
   });
-
+  user.courseBuy.push({
+    course: course,
+  });
   user.subscription.status = "active";
 
   await user.save();
 
   res.redirect(
-    `${process.env.FRONTEND_URL}/paymentsuccess?reference=${razorpay_payment_id}`
+    `${process.env.FRONTEND_URL}/paymentsuccess?reference=${razorpay_payment_id}&courseId=${course._id}`
   );
 });
-
 export const getRazorPayKey = catchAsyncError(async (req, res, next) => {
   res.status(200).json({
     success: true,

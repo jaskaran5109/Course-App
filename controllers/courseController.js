@@ -44,7 +44,7 @@ export const createCourse = catchAsyncError(async (req, res, next) => {
       public_id: mycloud.public_id,
       url: mycloud.secure_url,
     },
-    user:req.user.id
+    user: req.user.id,
   });
   res.status(200).json({
     success: true,
@@ -147,18 +147,18 @@ export const deleteLecture = catchAsyncError(async (req, res, next) => {
   });
 });
 
-// Course.watch().on("change", async () => {
-//   const stats = await Stats.find({}).sort({ createdAt: "desc" }).limit(1);
+Course.watch().on("change", async () => {
+  const stats = await Stats.find({}).sort({ createdAt: "desc" }).limit(1);
 
-//   const courses = await Course.find({});
+  const courses = await Course.find({});
 
-//   let totalViews = 0;
+  let totalViews = 0;
 
-//   for (let i = 0; i < courses.length; i++) {
-//     totalViews += courses[i].views;
-//   }
-//   stats[0].views = totalViews;
-//   stats[0].createdAt = new Date(Date.now());
+  for (let i = 0; i < courses.length; i++) {
+    totalViews += courses[i].views;
+  }
+  stats[0].views = totalViews;
+  stats[0].createdAt = new Date(Date.now());
 
-//   await stats[0].save();
-// });
+  await stats[0].save();
+});
